@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Video Downloader</title>
+    <!-- Add Bootstrap CSS for styling -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        .message {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>YouTube Video Downloader</h1>
+        <form method="post" onsubmit="return handleFormSubmission();">
+            <div class="form-group">
+                <label for="video_link">Enter the YouTube URL:</label>
+                <input type="text" class="form-control" name="video_link" id="video_link" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Download</button>
+        </form>
+        <div class="loading" id="loading">
+            <p><h4>Please wait, downloading...</h4></p>
+        </div>
+
+    <p class="message" id="message">
+        {% if message %}
+            {{ message }}
+        {% endif %}
+    </p>
+
+    </div>
+
+    <!-- Add Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function handleFormSubmission() {
+            const videoLink = $('#video_link').val();
+
+            // Hide the form and show the loading message
+            $('form').hide();
+            $('#loading').show();
+
+            // Download the video
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'https://matsibana.onrender.com/', true); // Update the backend URL here
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.responseType = 'blob';
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    // Hide the loading message and show the form
+                    $('#loading').hide();
+                    $('form').show();
+
+                    // Handle the response (you can display a message here if needed)
+                    const response = xhr.response;
+                    console.log(response); // You can do something with the response here
+
+                    // Show the success message
+                    $('#message').text('Download successful!');
+                }
+            };
+
+            const data = new URLSearchParams();
+            data.append('video_link', videoLink);
+            xhr.send(data);
+
+            // Prevent form submission
+            return false;
+        }
+    </script>
+</body>
+</html>
